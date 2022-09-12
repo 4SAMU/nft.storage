@@ -1,0 +1,177 @@
+.listBoard {
+  position: fixed;
+  width: 1060px;
+  height: 760px;
+  right: 0px;
+  top: 0px;
+border-left:1px solid #12a3d1;
+  background: #06112c;
+}
+
+.nft_name {
+  position: absolute;
+  width: 182px;
+  height: 59.5px;
+  left: 80px;
+  top: 21px;
+
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 39px;
+
+  color: #ffffff;
+}
+.nft_name_textbox {
+  position: absolute;
+  width: 620px;
+  height: 50px;
+  left: 0px;
+  top: 40px;
+  font-size: 19px;
+  font-style: normal;
+
+  background: #d9d9d9;
+  border-radius: 10px;
+}
+
+.nft_description {
+  position: absolute;
+  width: 276px;
+  height: 59.5px;
+  left: 80px;
+  top: 132px;
+
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 39px;
+
+  color: #ffffff;
+}
+.nft_description_textarea {
+  position: absolute;
+  width: 620px;
+  height: 150px;
+  left: 0px;
+  top: 40px;
+  font-size: 18px;
+  resize: none;
+  outline: 0ch;
+  background: #d9d9d9;
+  border-radius: 10px;
+}
+
+.price_in_eth {
+  position: absolute;
+  width: 276px;
+  height: 39px;
+  left: 80px;
+  top: 356px;
+
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 350;
+  font-size: 32px;
+  line-height: 24px;
+
+  /* identical to box height */
+
+  color: #ffffff;
+}
+
+.price_in_eth_textbox {
+  position: absolute;
+  width: 620px;
+  height: 35px;
+  left: 0px;
+  top: 40px;
+  outline: 0ch;
+
+  background: #d9d9d9;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.uploadNFT {
+  position: absolute;
+  width: 344px;
+  height: 60px;
+  left: 80px;
+  top: 460px;
+
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 39px;
+
+  color: #ffffff;
+}
+
+.browseBTN {
+  position: absolute;
+  width: 180px;
+  height: 45px;
+  left: 0px;
+  top: 40px;
+
+  background: #12a3d1;
+  border-radius: 10px;
+  border: 0ch;
+  color: #d9d9d9;
+  font-size: 18px;
+}
+
+.listNFT_BTN {
+  position: absolute;
+  width: 620px;
+  height: 45px;
+  left: 0px;
+  top: 100px;
+
+  background: #22b1de;
+  border: 0ch;
+  border-radius: 5px;
+  color: #d9d9d9;
+  font-size: 18px;
+}
+
+.catchError {
+  position: absolute;
+  width: 400px;
+  height: 80px;
+  left: 200px;
+  top: -50px;
+  border: 0;
+
+  background: transparent;
+  border-radius: 5px;
+  color: red;
+  font-size: 18px;
+  animation: catchError 5s linear infinite;
+}
+
+@keyframes catchError {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50px);
+    opacity: 1;
+  }
+}
+
+@media screen and (min-width: 100vw) {
+  .listBoard {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    left: 300px;
+    top: 0px;
+
+    background: #06112c;
+  }
+}
