@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
 import { useIPFS } from "./IPFSContextProvider";
-
-// Import the NFTStorage class and File constructor from the 'nft.storage' package
-
+import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ListNft = () => {
 
@@ -26,14 +26,14 @@ const ListNft = () => {
   
   async function mintNFThandler() {
     if (!nftName) {
-      return alert("NFT Name should not be empty");
+      return toast.warning("NFT Name should not be empty");
     } else if (!description) {
-      return alert("NFT Description should not be empty");
+      return toast.warning("NFT Description should not be empty");
     } else if (!selectedFile) {
-      return alert("Select a file to upload");
+      return toast.warning("Select a file to upload");
     }
     else if (!price) {
-      return alert("price should be include");
+      return toast.warning("price should be include");
     }
 
     try {
@@ -45,34 +45,30 @@ const ListNft = () => {
         },
         selectedFile
       );
-     console.log (result)
-      
-      alert("Mint Successfull !");
-    } catch (error) {
-      
+      console.log(result)     
+      toast.success("Mint Successfull !");
+    } catch (error) {      
       if (error) {
-        alert(error.message);
+        toast.error(error.message);
       }
 
     } 
-  }
-
+  }   
   
     useEffect(() => {
-    if (IPFSuploading) {
-      alert("Uploading NFT data To IPFS");
-    }
+      if (IPFSuploading) {
+        toast.info("Uploading NFT data To IPFS");
+      }
   }, [IPFSuploading]);
 
   useEffect(() => {
     if (IPFSerror) {
-      alert(IPFSerror.message);
+      toast.error(IPFSerror.message);
     }
   }, [IPFSerror]);
 
-
   return (
-    <section id="ListNFT">
+    <section id="ListNFT">      
       <div className="listNft_container">
         <div className="listBoard">
           <div className="nft_name">
@@ -126,8 +122,14 @@ const ListNft = () => {
             </button>
           </div>
         </div>
-      </div>
+      </div> 
+      <ToastContainer
+        style={{ overflowWrap: "anywhere" }}
+        position="bottom-right"
+      />
     </section>
+    
+    
   );
 };
 
