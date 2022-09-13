@@ -4,15 +4,19 @@ import { useIPFS } from "./IPFSContextProvider";
 import { toast } from "react-toastify";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Marketplace from './Marketplace.json';
+import { ethers } from "ethers";
 
-const ListNft = () => {
+const ListNft = () => {  
+    const [formParams, updateFormParams] = useState({
+    name: "",
+    description: "",
+    price: "",
+  });
 
-  const[nftName, setNftName]=useState("")
-  const[description, setDescription]=useState("")
-  const [price, setPrice] = useState("") 
   const [selectedFile, setSelectedFile] = useState(null);
   
-  const { IPFSuploading, IPFSerror, IPFSupload } = useIPFS();
+  const { IPFSuploading, IPFSerror, IPFSupload, metadata } = useIPFS();
 
   const inputFileRef = useRef(null);
 
@@ -24,8 +28,10 @@ const ListNft = () => {
     }
   }
   
-  async function mintNFThandler() {
-    if (!nftName) {
+  async function mintNFThandler(metadataURL) {
+    const { name, description, price } = formParams;
+
+    if (!name) {
       return toast.warning("NFT Name should not be empty");
     } else if (!description) {
       return toast.warning("NFT Description should not be empty");
@@ -33,29 +39,96 @@ const ListNft = () => {
       return toast.warning("Select a file to upload");
     }
     else if (!price) {
-      return toast.warning("price should be include");
+      return toast.warning("price should be included");
     }
 
     try {
-      const result = await IPFSupload(
-        {
-          name: nftName,
-          description: description,
-          price:price
-        },
-        selectedFile
+      metadataURL = await IPFSupload({
+        name,
+        description,
+        price
+      },
+        selectedFile        
       );
-      console.log(result)     
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      
+       let contract = new ethers.Contract(
+        Marketplace.address,
+        Marketplace.abi,
+        signer
+       );
+      
+      let listingPrice = await contract.getListPrice();
+      listingPrice = listingPrice.toString();
+      let transaction = await contract.createToken(metadata, ethers.utils.parseEther(formParams.price.toString()), {
+        value: listingPrice,
+      });
+      if (formParams.price >= 0.01) {
+        await transaction.wait();
+    } else {
+      toast.error("minimum price is 0.01")
+      }         
       toast.success("Mint Successfull !");
-    } catch (error) {      
+    }   
+    catch (error) {      
       if (error) {
-        toast.error(error.message);
+        toast.error("failed"+" "+error.message);
       }
 
     } 
-  }   
+  } 
   
-    useEffect(() => {
+//  { async function listNFT(e) {
+//     if (formParams.price >= 0.01) {
+//       await mintNFThandler();
+//     } else {
+//       toast.error("minimum price is 0.01")
+//     }   
+
+//     //Upload data to IPFS
+//     try { 
+//       await window.ethereum.request({
+//       method: "eth_requestAccounts",
+//     });
+//     e.preventDefault();
+      
+//       console.log("==============IPFS METADATA=============", metadata)
+//       //After adding your Hardhat network to your metamask, this code will get providers and signers
+//       const provider = new ethers.providers.Web3Provider(window.ethereum);
+//       const signer = provider.getSigner();
+
+//       //Pull the deployed contract instance
+//       let contract = new ethers.Contract(
+//         Marketplace.address,
+//         Marketplace.abi,
+//         signer
+//       );
+
+//       //massage the params to be sent to the create NFT request
+//       const price = ethers.utils.parseUnits(formParams.price, "ether");
+//       let listingPrice = await contract.getListPrice();
+//       listingPrice = listingPrice.toString();      
+
+//       //actually create the NFT
+//       let transaction = await contract.createToken(metadata, price, {
+//         value: listingPrice,
+//       });
+      
+//       await transaction.wait();
+//       toast.info("Please wait.. uploading (upto 5 mins)");
+
+//       toast.success("Successfully listed your NFT!");
+      
+//       updateFormParams({ name: "", description: "", price: "" });
+     
+//     } catch (error) {
+//       toast.error(error);     
+//     }
+//   }}
+
+  
+  useEffect(() => {
       if (IPFSuploading) {
         toast.info("Uploading NFT data To IPFS");
       }
@@ -77,9 +150,9 @@ const ListNft = () => {
               type="text"
               placeholder="your NFT name"
               className="nft_name_textbox"
-              value={nftName}
-              id={nftName}
-              onChange={(e) => setNftName(e.target.value)}
+              value={formParams.name}
+              id={formParams.name}
+              onChange={(e) => updateFormParams({ ...formParams, name: e.target.value })}
             ></input>
           </div>
           <div className="nft_description">
@@ -90,9 +163,9 @@ const ListNft = () => {
               type='text'
               placeholder="your NFT details"
               className="nft_description_textarea"
-              name="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}></textarea>
+              id={formParams.description}
+              value={formParams.description}
+              onChange={(e) => updateFormParams({ ...formParams, description: e.target.value })}></textarea>
           </div>
           <div className="price_in_eth">
             price (In ETH)
@@ -100,9 +173,9 @@ const ListNft = () => {
               type="text"
               placeholder="min 0.01 ETH"
               className="price_in_eth_textbox"
-              id={price}
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}>
+              id={formParams.price}
+            value={formParams.price}
+            onChange={(e) => updateFormParams({ ...formParams, price: e.target.value })}>
             </input>
           </div>
           <div className="uploadNFT">

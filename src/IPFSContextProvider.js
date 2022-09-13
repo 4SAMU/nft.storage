@@ -7,7 +7,8 @@ const IPFSContext = createContext({});
 
 export function IPFSContextProvider(props) {
   const [IPFSuploading, setIPFSuploading] = useState(false);
-  const [IPFSerror, setIPFSerror] = useState(null);  
+  const [IPFSerror, setIPFSerror] = useState(null); 
+  const [metadata, setMetadata]=useState('')
 
   async function IPFSupload(data, file) {     
    
@@ -25,6 +26,7 @@ export function IPFSContextProvider(props) {
       console.log('IPFS URL for the metadata:', metadata.url)
       console.log('metadata.json contents:\n', metadata.data)
       console.log('metadata.json with IPFS gateway URLs:\n', metadata.embed())
+      setMetadata(metadata.data)
       
     } catch (error) {
       toast.error(error);
@@ -35,7 +37,7 @@ export function IPFSContextProvider(props) {
   }
 
   return (
-    <IPFSContext.Provider value={{ IPFSuploading, IPFSerror, IPFSupload }}>
+    <IPFSContext.Provider value={{ IPFSuploading, IPFSerror, metadata, IPFSupload }}>
       {props.children}
     </IPFSContext.Provider>
   );
