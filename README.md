@@ -1,3 +1,6 @@
+#client files, index.js, App.js and IPFSContextProvider.js
+others like upload.mjs you can upload directly by running node src/upload.mjs object.png/jpeg/jpg/gif/mp4/mp3 <nft name> <nft description> <nft price>
+
 #creating BigNumber instances
 ```shell
 const a = ethers.BigNumber.from('1') // creates BigNumber of 1
