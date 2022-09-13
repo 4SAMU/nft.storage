@@ -42,15 +42,18 @@ const ListNft = () => {
       return toast.warning("price should be included");
     }
 
-    try {
-      metadataURL = await IPFSupload({
+    try { 
+      if (formParams.price < 0.01) {
+        toast.error("minimum price is 0.01")
+      } else {
+        metadataURL = await IPFSupload({
         name,
         description,
         price
       },
         selectedFile        
-      );
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+        );
+              const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       
        let contract = new ethers.Contract(
@@ -64,12 +67,13 @@ const ListNft = () => {
       let transaction = await contract.createToken(metadata, ethers.utils.parseEther(formParams.price.toString()), {
         value: listingPrice,
       });
-      if (formParams.price >= 0.01) {
+        toast.info("Please wait.. minting may take upto 5 mins for complete transaction");
         await transaction.wait();
-    } else {
-      toast.error("minimum price is 0.01")
-      }         
+        updateFormParams({ name: "", description: "", price: "" });
       toast.success("Mint Successfull !");
+      }       
+      
+      
     }   
     catch (error) {      
       if (error) {
@@ -78,55 +82,6 @@ const ListNft = () => {
 
     } 
   } 
-  
-//  { async function listNFT(e) {
-//     if (formParams.price >= 0.01) {
-//       await mintNFThandler();
-//     } else {
-//       toast.error("minimum price is 0.01")
-//     }   
-
-//     //Upload data to IPFS
-//     try { 
-//       await window.ethereum.request({
-//       method: "eth_requestAccounts",
-//     });
-//     e.preventDefault();
-      
-//       console.log("==============IPFS METADATA=============", metadata)
-//       //After adding your Hardhat network to your metamask, this code will get providers and signers
-//       const provider = new ethers.providers.Web3Provider(window.ethereum);
-//       const signer = provider.getSigner();
-
-//       //Pull the deployed contract instance
-//       let contract = new ethers.Contract(
-//         Marketplace.address,
-//         Marketplace.abi,
-//         signer
-//       );
-
-//       //massage the params to be sent to the create NFT request
-//       const price = ethers.utils.parseUnits(formParams.price, "ether");
-//       let listingPrice = await contract.getListPrice();
-//       listingPrice = listingPrice.toString();      
-
-//       //actually create the NFT
-//       let transaction = await contract.createToken(metadata, price, {
-//         value: listingPrice,
-//       });
-      
-//       await transaction.wait();
-//       toast.info("Please wait.. uploading (upto 5 mins)");
-
-//       toast.success("Successfully listed your NFT!");
-      
-//       updateFormParams({ name: "", description: "", price: "" });
-     
-//     } catch (error) {
-//       toast.error(error);     
-//     }
-//   }}
-
   
   useEffect(() => {
       if (IPFSuploading) {
