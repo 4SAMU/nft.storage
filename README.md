@@ -12,3 +12,8 @@ b.toString() // '1000000000000000000'
 ethers.utils.formatEther(a) // '0.000000000000000001'
 ethers.utils.formatEther(b) // '1.0'
 ```
+# run by:
+  ```shell
+  npm install
+  npm start
+  ```
